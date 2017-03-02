@@ -1,5 +1,7 @@
 #include <SDL\SDL.h>
+#include <SDL\SDL_image.h>
 #include <stdio.h>
+#include <string>
 
 //screen dims
 const int SCREEN_WIDTH = 800;
@@ -14,20 +16,53 @@ bool init();
 void render();
 bool loadShit();
 void shutdown();
+bool handleEvents();
+
+SDL_Surface* loadSurface(std::string path)
+{
+	//the final optimized image
+	SDL_Surface* optimizedSurface = nullptr;
+
+	//load the image from the specified path
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+	if (loadedSurface == nullptr)
+	{
+		printf("unable to load image! %s SDL error: %s", path.c_str(), IMG_GetError());
+	}
+	else
+	{
+		//convert surface to screen format
+		optimizedSurface = SDL_ConvertSurface(loadedSurface, screenSurface->format, 0);
+		if (optimizedSurface == nullptr)
+		{
+			printf("unable to optimize image %s SDL error: %s", path.c_str(), SDL_GetError());
+		}
+
+		//get rid of the old loaded surface
+		SDL_FreeSurface(loadedSurface);
+	}
+	return optimizedSurface;
+}
 
 int main(int argc,char** argv)
 {
+	//loop flag
+	bool quit = false;
+
 	//initialize and create the window
 	init();
 
 	//load everything
 	loadShit();
 
-	//draw everything
-	render();
+	while (!quit)
+	{
+		//update the application loop
+		quit = handleEvents();
 
-	//wait a few seconds
-	SDL_Delay(7000);
+		//draw everything
+		render();
+	}
 
 	//shutdown and free memory
 	shutdown();
@@ -54,8 +89,18 @@ bool init()
 		result = false;
 	}
 
-	//get the window surface
-	screenSurface = SDL_GetWindowSurface(window);
+	//initialize PNG loading
+	int imageFlags = IMG_INIT_PNG;
+	if (!(IMG_Init(imageFlags) & imageFlags))
+	{
+		printf("SDL image could not be initialized! SDL image error: %s\n", IMG_GetError());
+		result = false;
+	}
+	else
+	{
+		//get the window surface
+		screenSurface = SDL_GetWindowSurface(window);
+	}
 
 	return result;
 }
@@ -66,7 +111,7 @@ void render()
 	SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 255, 0, 0));
 
 	//apply the image
-	SDL_BlitSurface(imageSurface, NULL, screenSurface, NULL);
+	SDL_BlitSurface(imageSurface, 0, screenSurface, 0);
 
 	//update the surface
 	SDL_UpdateWindowSurface(window);
@@ -77,10 +122,10 @@ bool loadShit()
 	bool result = true;
 
 	//load an image
-	imageSurface = SDL_LoadBMP("res/hello_world.bmp");
+	imageSurface = loadSurface("res/elysianshadows.png");
 	if (imageSurface == NULL)
 	{
-		printf("could not load the image! SDL Error: %s\n",SDL_GetError());
+		printf("could not load PNG image! \n");
 		result = false;
 	}
 
@@ -95,7 +140,45 @@ void shutdown()
 
 	//destroy the window
 	SDL_DestroyWindow(window);
-	window = nullptr;
+	window = NULL;
 
+	IMG_Quit();
 	SDL_Quit();
+}
+
+bool handleEvents()
+{
+	SDL_Event windowEvent;
+	bool quit = false;
+
+	//handle all queue events
+	while (SDL_PollEvent(&windowEvent))
+	{
+		switch (windowEvent.type)
+		{
+		case SDL_QUIT:
+		{
+			quit = true;
+		}break;
+		case SDL_WINDOWEVENT_CLOSE:
+		{
+			if (window)
+			{
+				SDL_DestroyWindow(window);
+				window = NULL;
+				quit = true;
+			}
+		}break;
+		case SDL_KEYDOWN:
+		{
+			//exit the application when escape is pressed
+			if (windowEvent.key.keysym.sym == SDLK_ESCAPE)
+			{
+				quit = true;
+			}
+		}break;
+		}
+	}
+
+	return quit;
 }
