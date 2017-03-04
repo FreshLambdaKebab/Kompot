@@ -9,8 +9,14 @@ const int SCREEN_HEIGHT = 600;
 
 //create window pointer
 SDL_Window* window = NULL;
+SDL_Renderer* renderer = nullptr;
+
+//surfaces
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* imageSurface = NULL;
+
+//textures
+SDL_Texture* texture = nullptr;
 
 bool init();
 void render();
@@ -42,6 +48,31 @@ SDL_Surface* loadSurface(std::string path)
 		SDL_FreeSurface(loadedSurface);
 	}
 	return optimizedSurface;
+}
+SDL_Texture* loadTexture(std::string path)
+{
+	//final texture
+	SDL_Texture* tex = nullptr;
+
+	//load image at specified path
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+	if (loadedSurface == NULL)
+	{
+		printf("could not load surface! IMG Error: %s", IMG_GetError());
+	}
+	else
+	{
+		//create the texture from the surface pixels
+		tex = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+		if (tex == NULL)
+		{
+			printf("unable to create texture from surface! SDL Error: %s",SDL_GetError());
+		}
+
+		//free old surface
+		SDL_FreeSurface(loadedSurface);
+	}
+	return tex;
 }
 
 int main(int argc,char** argv)
@@ -88,18 +119,29 @@ bool init()
 	{
 		result = false;
 	}
-
-	//initialize PNG loading
-	int imageFlags = IMG_INIT_PNG;
-	if (!(IMG_Init(imageFlags) & imageFlags))
-	{
-		printf("SDL image could not be initialized! SDL image error: %s\n", IMG_GetError());
-		result = false;
-	}
 	else
 	{
-		//get the window surface
-		screenSurface = SDL_GetWindowSurface(window);
+		//create the renderer for the window
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+		if (renderer == NULL)
+		{
+			printf("could not create renderer!! SDL Error: %s", SDL_GetError());
+			result = false;
+		}
+		else
+		{
+			//if the renderer was succesfully created
+			//initialize the renderer color
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+			//initialize PNG loading
+			int imageFlags = IMG_INIT_PNG;
+			if (!(IMG_Init(imageFlags) & imageFlags))
+			{
+				printf("SDL image could not be initialized! SDL image error: %s\n", IMG_GetError());
+				result = false;
+			}
+		}
 	}
 
 	return result;
@@ -107,14 +149,20 @@ bool init()
 
 void render()
 {
-	//fill the surface to a desired color
-	SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 255, 0, 0));
+	//clear the screen to desired color
+	SDL_SetRenderDrawColor(renderer, 255, 255, 105, 255);
+	SDL_RenderClear(renderer);
 
-	//apply the image
-	SDL_BlitSurface(imageSurface, 0, screenSurface, 0);
+	//render texture to the screen
+	//SDL_RenderCopy(renderer, texture, 0, 0);
 
-	//update the surface
-	SDL_UpdateWindowSurface(window);
+	//render a filled quad
+	SDL_Rect quadRect = { SCREEN_WIDTH / 4,SCREEN_HEIGHT / 4,SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 };
+	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	SDL_RenderFillRect(renderer, &quadRect);
+
+	//update screen
+	SDL_RenderPresent(renderer);
 }
 
 bool loadShit()
@@ -122,10 +170,10 @@ bool loadShit()
 	bool result = true;
 
 	//load an image
-	imageSurface = loadSurface("res/elysianshadows.png");
-	if (imageSurface == NULL)
+	texture = loadTexture("res/elysianshadows.png");
+	if (texture == NULL)
 	{
-		printf("could not load PNG image! \n");
+		printf("could not load texture image! \n");
 		result = false;
 	}
 
@@ -138,9 +186,16 @@ void shutdown()
 	SDL_FreeSurface(imageSurface);
 	imageSurface = NULL;
 
-	//destroy the window
+	//free loaded image
+	SDL_DestroyTexture(texture);
+	texture = nullptr;
+
+	//destroy the window & renderer
 	SDL_DestroyWindow(window);
 	window = NULL;
+
+	SDL_DestroyRenderer(renderer);
+	renderer = nullptr;
 
 	IMG_Quit();
 	SDL_Quit();
