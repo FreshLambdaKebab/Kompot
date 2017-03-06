@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string>
 
+#include "Texture.h"
+
 //screen dims
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
@@ -17,6 +19,10 @@ SDL_Surface* imageSurface = NULL;
 
 //textures
 SDL_Texture* texture = nullptr;
+
+//scene textures
+Texture fooTex;
+Texture backgroundTex;
 
 bool init();
 void render();
@@ -153,13 +159,23 @@ void render()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 105, 255);
 	SDL_RenderClear(renderer);
 
-	//render texture to the screen
-	//SDL_RenderCopy(renderer, texture, 0, 0);
+
+	//create viewport
+	SDL_Rect viewPort;
+	viewPort.x = 0;
+	viewPort.y = 0;
+	viewPort.w = SCREEN_WIDTH;
+	viewPort.h = SCREEN_HEIGHT;
+	SDL_RenderSetViewport(renderer, &viewPort);
+
+	//render textures to the screen
+	backgroundTex.render(0, 0,SCREEN_WIDTH,SCREEN_HEIGHT, renderer);
+	fooTex.render(400, 300,100,100 ,renderer);
 
 	//render a filled quad
-	SDL_Rect quadRect = { SCREEN_WIDTH / 4,SCREEN_HEIGHT / 4,SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 };
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	SDL_RenderFillRect(renderer, &quadRect);
+	//SDL_Rect quadRect = { SCREEN_WIDTH / 4,SCREEN_HEIGHT / 4,SCREEN_WIDTH / 2,SCREEN_HEIGHT / 2 };
+	//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	//SDL_RenderFillRect(renderer, &quadRect);
 
 	//update screen
 	SDL_RenderPresent(renderer);
@@ -169,11 +185,17 @@ bool loadShit()
 {
 	bool result = true;
 
-	//load an image
-	texture = loadTexture("res/elysianshadows.png");
-	if (texture == NULL)
+	//load dude texture
+	if (!fooTex.load("res/foo.png", renderer))
 	{
-		printf("could not load texture image! \n");
+		printf("failed to load foo image\n");
+		result = false;
+	}
+
+	//load background texture
+	if (!backgroundTex.load("res/background.png", renderer))
+	{
+		printf("failed to load background image\n");
 		result = false;
 	}
 
@@ -182,13 +204,13 @@ bool loadShit()
 
 void shutdown()
 {
-	//deallocate memory
-	SDL_FreeSurface(imageSurface);
-	imageSurface = NULL;
+	//free loaded images
+	fooTex.destroy();
+	backgroundTex.destroy();
 
 	//free loaded image
-	SDL_DestroyTexture(texture);
-	texture = nullptr;
+	//SDL_DestroyTexture(texture);
+	//texture = nullptr;
 
 	//destroy the window & renderer
 	SDL_DestroyWindow(window);
