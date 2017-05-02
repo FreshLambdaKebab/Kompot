@@ -9,8 +9,10 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Window.h" />
   </ItemGroup>
 </Project>

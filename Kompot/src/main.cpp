@@ -4,13 +4,15 @@
 #include <string>
 
 #include "Texture.h"
+#include "Window.h"
 
 //screen dims
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
-//create window pointer
-SDL_Window* window = NULL;
+Window m_window;
+
+//create renderer pointer
 SDL_Renderer* renderer = nullptr;
 
 //surfaces
@@ -118,17 +120,16 @@ bool init()
 		result = false;
 	}
 
-	//create window
-	window = SDL_CreateWindow("The damn window title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-	if (window == NULL)
+	
+	//create the window
+	if (!m_window.CreateWindow("the damn window title", SCREEN_WIDTH, SCREEN_HEIGHT))
 	{
 		result = false;
 	}
 	else
 	{
 		//create the renderer for the window
-		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+		renderer = SDL_CreateRenderer(m_window.GetWindow(), -1, SDL_RENDERER_ACCELERATED);
 		if (renderer == NULL)
 		{
 			printf("could not create renderer!! SDL Error: %s", SDL_GetError());
@@ -213,8 +214,7 @@ void shutdown()
 	//texture = nullptr;
 
 	//destroy the window & renderer
-	SDL_DestroyWindow(window);
-	window = NULL;
+	m_window.DestroyWindow();
 
 	SDL_DestroyRenderer(renderer);
 	renderer = nullptr;
@@ -239,10 +239,9 @@ bool handleEvents()
 		}break;
 		case SDL_WINDOWEVENT_CLOSE:
 		{
-			if (window)
+			if (m_window.GetWindow())
 			{
-				SDL_DestroyWindow(window);
-				window = NULL;
+				m_window.DestroyWindow();
 				quit = true;
 			}
 		}break;
