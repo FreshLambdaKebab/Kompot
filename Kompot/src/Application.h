@@ -1,7 +1,7 @@
 #ifndef _APPLICATION_H
 #define _APPLICATION_H
 
-#include <SDL\SDL.h>
+#include "Framework.h"
 
 class Application
 {
@@ -15,11 +15,10 @@ public:
 	void Draw();
 
 private:
-	SDL_Window* m_window;
-	SDL_Renderer* m_renderer;
-
-	int m_screenWidth, m_screenHeight;
+	Framework* m_framework;
 	bool m_done = false;
+
+
 };
 
 #endif

@@ -2,41 +2,28 @@
 #include <iostream>
 
 Application::Application():
-	m_window(nullptr),
-	m_renderer(nullptr),
-	m_screenWidth(0),
-	m_screenHeight(0)
+	m_framework(nullptr)
 {
-	
+
 }
 
 
 Application::~Application()
 {
-	//close and destroy the window
-	SDL_DestroyWindow(m_window);
-
-	SDL_Quit();
+	//delete the framework object
+	delete m_framework;
+	m_framework = 0;
 }
 
 bool Application::Init(int screenWidth, int screenHeight, const char * windowTitle)
 {
-	//initialize sdl2
-	SDL_Init(SDL_INIT_EVERYTHING);
-
-	m_screenWidth = screenWidth;
-	m_screenHeight = screenHeight;
-
-	//create the window
-	m_window = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		screenWidth, screenHeight, SDL_WINDOW_OPENGL);
-	if (m_window == NULL) {
-		std::cout << "the window could not be created.." << std::endl;
+	//initialize the framwork object
+	m_framework = new Framework(screenWidth,screenHeight,windowTitle);
+	if (!m_framework) {
 		return false;
 	}
 
-	//create the sdl renderer
-	m_renderer = SDL_CreateRenderer(m_window, -1, 0);
+	//initialize game shit here
 
 	return true;
 }
@@ -77,14 +64,13 @@ bool Application::Update()
 			return false;
 		}
 	}
-	std::cout << "updating shit\n";
+
 	return true;
 }
 
 void Application::Draw()
 {
-	SDL_SetRenderDrawColor(m_renderer, 255, 0, 0, 255);
-	SDL_RenderClear(m_renderer);
-	SDL_RenderPresent(m_renderer);
-	std::cout << "rendering shit\n";
+	SDL_SetRenderDrawColor(m_framework->GetRenderer(), 255, 0, 0, 255);
+	SDL_RenderClear(m_framework->GetRenderer());
+	SDL_RenderPresent(m_framework->GetRenderer());
 }
