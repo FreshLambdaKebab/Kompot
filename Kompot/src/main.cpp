@@ -1,10 +1,10 @@
-#include "Application.h"
+#include "Game.h"
 
 int main(int argc,char** argv)
 {
-	Application app;
-	app.Init(800, 600, "the fuckin title");
-	app.Run();
+	Game game;
+	game.Init(800, 600, "Pickup Shit");
+	game.Run();
 
 	return 0;
 }

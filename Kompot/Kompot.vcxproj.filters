@@ -8,11 +8,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Framework.cpp" />
+    <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Framework.h" />
+    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Sprite.h" />
   </ItemGroup>
 </Project>

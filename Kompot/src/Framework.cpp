@@ -1,7 +1,6 @@
 #include "Framework.h"
 #include <iostream>
 
-
 Framework::Framework(int screenWidth, int screenHeight, const char * windowTitle):
 	m_window(nullptr),
 	m_renderer(nullptr),
@@ -32,5 +31,15 @@ Framework::~Framework()
 	SDL_DestroyWindow(m_window);
 
 	SDL_Quit();
+}
+
+void Framework::BeginDraw()
+{
+	SDL_RenderClear(m_renderer);
+}
+
+void Framework::EndDraw()
+{
+	SDL_RenderPresent(m_renderer);
 }
 

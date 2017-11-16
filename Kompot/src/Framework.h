@@ -9,6 +9,9 @@ public:
 	Framework(int screenWidth, int screenHeight, const char * windowTitle);
 	~Framework();
 
+	void BeginDraw();
+	void EndDraw();
+
 	//getters for sdl pointers
 	SDL_Window* GetWindow()const { return m_window; }
 	SDL_Renderer* GetRenderer()const { return m_renderer; }
