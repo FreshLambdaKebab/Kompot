@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#include <cstdlib>
 
 Game::Game():
 	m_framework(nullptr),
@@ -34,10 +35,11 @@ bool Game::Init(int screenWidth, int screenHeight, const char * windowTitle)
 
 	//initialize game shit here
 	m_background = new Sprite();
-	m_background->Init(*m_framework->GetRenderer(), "res/background.png", { 0,0 });
+	m_background->Init(*m_framework->GetRenderer(), "res/grass.png", { 0,0 }, {screenWidth,screenHeight});
 
 	m_sprite = new Sprite();
-	m_sprite->Init(*m_framework->GetRenderer(), "res/foo.png", {200,200});
+	m_sprite->Init(*m_framework->GetRenderer(), "res/stan.png", { 300,300 }, {100,100});
+	m_sprite->SetPosition({ 10,10 });
 
 	return true;
 }
@@ -76,6 +78,25 @@ bool Game::Update()
 		{
 			m_done = true;
 			return false;
+		}
+
+		//move the player
+		const float speed = 25.0f;
+		if (windowEvent.key.keysym.sym == SDLK_d)
+		{
+			m_sprite->GetPosition().x += speed;
+		}
+		if (windowEvent.key.keysym.sym == SDLK_s)
+		{
+			m_sprite->GetPosition().y += speed;
+		}
+		if (windowEvent.key.keysym.sym == SDLK_a)
+		{
+			m_sprite->GetPosition().x -= speed;
+		}
+		if (windowEvent.key.keysym.sym == SDLK_w)
+		{
+			m_sprite->GetPosition().y -= speed;
 		}
 	}
 
