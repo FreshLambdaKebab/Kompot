@@ -39,7 +39,7 @@ bool Game::Init(int screenWidth, int screenHeight, const char * windowTitle)
 
 	m_sprite = new Sprite();
 	m_sprite->Init(*m_framework->GetRenderer(), "res/stan.png", { 300,300 }, {100,100});
-	m_sprite->SetPosition({ 10,10 });
+	m_sprite->SetPosition(100,100);
 
 	return true;
 }
@@ -71,42 +71,34 @@ bool Game::Update()
 			m_done = true;
 			return false;
 			break;
-		}
+		case SDL_MOUSEMOTION:
+			m_inputManager.SetMouseCoords(static_cast<float>(windowEvent.motion.x), static_cast<float>(windowEvent.motion.y));
+			break;
+		case SDL_KEYDOWN:
+			m_inputManager.PressKey(windowEvent.key.keysym.sym);
 
-		//if the user pressed escape, exit out the window
-		if (windowEvent.key.keysym.sym == SDLK_ESCAPE)
-		{
-			m_done = true;
-			return false;
-		}
+			//if the user pressed escape, exit out the window
+			if (windowEvent.key.keysym.sym == SDLK_ESCAPE) {
+				m_done = true;
+				return false;
+			}
 
-		//move the player
-		const float speed = 25.0f;
-		if (windowEvent.key.keysym.sym == SDLK_d)
-		{
-			m_sprite->GetPosition().x += speed;
-		}
-		if (windowEvent.key.keysym.sym == SDLK_s)
-		{
-			m_sprite->GetPosition().y += speed;
-		}
-		if (windowEvent.key.keysym.sym == SDLK_a)
-		{
-			m_sprite->GetPosition().x -= speed;
-		}
-		if (windowEvent.key.keysym.sym == SDLK_w)
-		{
-			m_sprite->GetPosition().y -= speed;
-		}
+			break;
+		case SDL_KEYUP:
+			m_inputManager.ReleaseKey(windowEvent.key.keysym.sym);
+			break;
+		}		
+
 	}
+
+	//handle user input
+	HandleInput();
 
 	return true;
 }
 
 void Game::Draw()
 {
-	//render and set the background color
-	SDL_SetRenderDrawColor(m_framework->GetRenderer(), 150, 50, 15, 255);
 	m_framework->BeginDraw();
 
 	//draw sprites
@@ -115,4 +107,18 @@ void Game::Draw()
 
 	//when finished drawing present rendered objects
 	m_framework->EndDraw();
+}
+
+void Game::HandleInput()
+{
+	//move the player
+	const float speed = 0.25f;
+	if (m_inputManager.IsKeyDown(SDLK_w))
+		m_sprite->GetPosition().y -= speed;
+	if (m_inputManager.IsKeyDown(SDLK_a))
+		m_sprite->GetPosition().x -= speed;
+	if (m_inputManager.IsKeyDown(SDLK_s))
+		m_sprite->GetPosition().y += speed;
+	if (m_inputManager.IsKeyDown(SDLK_d))
+		m_sprite->GetPosition().x += speed;
 }

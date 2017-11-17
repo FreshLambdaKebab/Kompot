@@ -35,6 +35,8 @@ Framework::~Framework()
 
 void Framework::BeginDraw()
 {
+	//render and set the background color
+	SDL_SetRenderDrawColor(m_renderer, 150, 50, 15, 255);
 	SDL_RenderClear(m_renderer);
 }
 

@@ -47,16 +47,18 @@ void Sprite::Draw(SDL_Renderer & renderer)
 	SDL_RenderCopy(&renderer, m_texture, NULL, &m_destRect);
 }
 
-glm::vec2 & Sprite::GetPosition()
+glm::vec2& Sprite::GetPosition()
 {
 	m_destRect.x = m_position.x;
 	m_destRect.y = m_position.y;
 	return m_position;
 }
 
-void Sprite::SetPosition(const glm::vec2 & position)
+void Sprite::SetPosition(float x,float y)
 {
-	m_position = position;
-	m_destRect.x = position.x;
-	m_destRect.y = position.y;
+	m_position.x = x;
+	m_position.y = y;
+
+	m_destRect.x = x;
+	m_destRect.y = y;
 }

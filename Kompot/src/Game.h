@@ -4,6 +4,7 @@
 #include "Framework.h"
 
 #include "Sprite.h"
+#include "InputManager.h"
 
 class Game
 {
@@ -16,6 +17,8 @@ public:
 	bool Update();
 	void Draw();
 
+	void HandleInput();
+
 private:
 	Framework* m_framework;
 	bool m_done = false;
@@ -23,6 +26,8 @@ private:
 	//declare game shit here
 	Sprite* m_sprite;
 	Sprite* m_background;
+	InputManager m_inputManager;
+	
 };
 
 #endif

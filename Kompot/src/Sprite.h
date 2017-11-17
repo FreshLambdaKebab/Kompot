@@ -18,7 +18,7 @@ public:
 	//getters and setters
 	const glm::vec2& GetPosition()const { return m_position;  }
 	glm::vec2& GetPosition();
-	void SetPosition(const glm::vec2& position);
+	void SetPosition(float x,float y);
 
 private:
 	SDL_Texture* m_texture;
