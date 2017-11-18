@@ -4,7 +4,7 @@
 
 Game::Game():
 	m_framework(nullptr),
-	m_sprite(nullptr),
+	m_player(nullptr),
 	m_background(nullptr)
 {
 
@@ -17,8 +17,8 @@ Game::~Game()
 	m_framework = 0;
 
 	//delete the sprite object
-	delete m_sprite;
-	m_sprite = 0;
+	delete m_player;
+	m_player = 0;
 	
 	//delete background object
 	delete m_background;
@@ -37,9 +37,8 @@ bool Game::Init(int screenWidth, int screenHeight, const char * windowTitle)
 	m_background = new Sprite();
 	m_background->Init(*m_framework->GetRenderer(), "res/grass.png", { 0,0 }, {screenWidth,screenHeight});
 
-	m_sprite = new Sprite();
-	m_sprite->Init(*m_framework->GetRenderer(), "res/stan.png", { 300,300 }, {100,100});
-	m_sprite->SetPosition(100,100);
+	//create the player
+	m_player = new Player(*m_framework->GetRenderer());
 
 	return true;
 }
@@ -91,6 +90,9 @@ bool Game::Update()
 
 	}
 
+	//update player
+	m_player->Update(m_inputManager);
+
 	//handle user input
 	HandleInput();
 
@@ -103,7 +105,7 @@ void Game::Draw()
 
 	//draw sprites
 	m_background->Draw(*m_framework->GetRenderer());
-	m_sprite->Draw(*m_framework->GetRenderer());
+	m_player->Draw(*m_framework->GetRenderer());
 
 	//when finished drawing present rendered objects
 	m_framework->EndDraw();
@@ -111,14 +113,5 @@ void Game::Draw()
 
 void Game::HandleInput()
 {
-	//move the player
-	const float speed = 0.25f;
-	if (m_inputManager.IsKeyDown(SDLK_w))
-		m_sprite->GetPosition().y -= speed;
-	if (m_inputManager.IsKeyDown(SDLK_a))
-		m_sprite->GetPosition().x -= speed;
-	if (m_inputManager.IsKeyDown(SDLK_s))
-		m_sprite->GetPosition().y += speed;
-	if (m_inputManager.IsKeyDown(SDLK_d))
-		m_sprite->GetPosition().x += speed;
+	
 }

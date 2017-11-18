@@ -6,6 +6,8 @@
 #include "Sprite.h"
 #include "InputManager.h"
 
+#include "Player.h"
+
 class Game
 {
 public:
@@ -24,7 +26,7 @@ private:
 	bool m_done = false;
 
 	//declare game shit here
-	Sprite* m_sprite;
+	Player* m_player;
 	Sprite* m_background;
 	InputManager m_inputManager;
 	

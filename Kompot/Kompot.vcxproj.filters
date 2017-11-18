@@ -12,11 +12,15 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\InputManager.cpp" />
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Poo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Framework.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Sprite.h" />
     <ClInclude Include="src\InputManager.h" />
+    <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\Poo.h" />
   </ItemGroup>
 </Project>

@@ -151,6 +151,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Poo.cpp" />
+    <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Framework.cpp" />
     <ClCompile Include="src\InputManager.cpp" />
@@ -158,6 +160,8 @@
     <ClCompile Include="src\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Poo.h" />
+    <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Framework.h" />
     <ClInclude Include="src\InputManager.h" />
