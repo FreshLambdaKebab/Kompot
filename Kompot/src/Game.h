@@ -3,10 +3,11 @@
 
 #include "Framework.h"
 
-#include "Sprite.h"
 #include "InputManager.h"
 
 #include "Player.h"
+#include "Poo.h"
+#include "Map.h"
 
 class Game
 {
@@ -19,16 +20,19 @@ public:
 	bool Update();
 	void Draw();
 
-	void HandleInput();
 
 private:
+	void HandleInput();
+	void HandleCollision();
+
 	Framework* m_framework;
 	bool m_done = false;
 
 	//declare game shit here
 	Player* m_player;
-	Sprite* m_background;
+	Map* m_map;
 	InputManager m_inputManager;
+	Poo* m_poo;
 	
 };
 

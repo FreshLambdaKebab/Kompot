@@ -2,18 +2,17 @@
 #define _POO_H
 
 #include <SDL/SDL.h>
-#include "Sprite.h"
+#include <glm\glm.hpp>
+#include "Entity.h"
 
-class Poo
+class Poo : public Entity
 {
 public:
-	Poo();
+	Poo(SDL_Renderer& renderer);
 	~Poo();
 
-	void Draw(SDL_Renderer& renderer);
-
 private:
-	Sprite* m_pooSprite;
+	glm::vec2 m_position;
 
 };
 

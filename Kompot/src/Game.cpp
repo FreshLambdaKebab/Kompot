@@ -5,7 +5,8 @@
 Game::Game():
 	m_framework(nullptr),
 	m_player(nullptr),
-	m_background(nullptr)
+	m_map(nullptr),
+	m_poo(nullptr)
 {
 
 }
@@ -20,9 +21,13 @@ Game::~Game()
 	delete m_player;
 	m_player = 0;
 	
-	//delete background object
-	delete m_background;
-	m_background = 0;
+	//delete map object
+	delete m_map;
+	m_map = 0;
+
+	//delete the poo object
+	delete m_poo;
+	m_poo = 0;
 }
 
 bool Game::Init(int screenWidth, int screenHeight, const char * windowTitle)
@@ -34,11 +39,13 @@ bool Game::Init(int screenWidth, int screenHeight, const char * windowTitle)
 	}
 
 	//initialize game shit here
-	m_background = new Sprite();
-	m_background->Init(*m_framework->GetRenderer(), "res/grass.png", { 0,0 }, {screenWidth,screenHeight});
+	m_map = new Map(*m_framework->GetRenderer(), screenWidth, screenHeight);
 
 	//create the player
 	m_player = new Player(*m_framework->GetRenderer());
+
+	//create the poo
+	m_poo = new Poo(*m_framework->GetRenderer());
 
 	return true;
 }
@@ -93,8 +100,9 @@ bool Game::Update()
 	//update player
 	m_player->Update(m_inputManager);
 
-	//handle user input
+	//handle user input & collision
 	HandleInput();
+	HandleCollision();
 
 	return true;
 }
@@ -104,8 +112,9 @@ void Game::Draw()
 	m_framework->BeginDraw();
 
 	//draw sprites
-	m_background->Draw(*m_framework->GetRenderer());
+	m_map->Draw(*m_framework->GetRenderer());
 	m_player->Draw(*m_framework->GetRenderer());
+	m_poo->Draw(*m_framework->GetRenderer());
 
 	//when finished drawing present rendered objects
 	m_framework->EndDraw();
@@ -114,4 +123,12 @@ void Game::Draw()
 void Game::HandleInput()
 {
 	
+}
+
+void Game::HandleCollision()
+{
+	//check if the player rect hits the poo rect
+	if ((m_player->GetRect().x == m_poo->GetRect().x) && (m_player->GetRect().y == m_poo->GetRect().y)) {
+		std::cout << "stan ate shit" << std::endl;
+	}
 }
