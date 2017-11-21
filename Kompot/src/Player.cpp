@@ -1,10 +1,9 @@
 #include "Player.h"
 
 Player::Player(SDL_Renderer& renderer) :
-	Entity()
+	Entity(renderer, "res/stan.png", { 300,300 }, { 100,100 })
 {
-	//call the base class init function
-	Init(renderer, "res/stan.png", { 300,300 }, { 100,100 });
+
 }
 
 Player::~Player()
@@ -24,5 +23,9 @@ void Player::Update(InputManager& input)
 		GetPosition().y += speed;
 	if (input.IsKeyDown(SDLK_d))
 		GetPosition().x += speed;
+
+	//test bullshit
+	if (input.IsKeyDown(SDLK_SPACE))
+		SetPosition(400, 300);
 }
 

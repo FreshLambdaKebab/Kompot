@@ -1,32 +1,28 @@
 #ifndef _ENTITY_H
 #define _ENTITY_H
 
-#include <SDL\SDL.h>
-#include <SDL\SDL_image.h>
-#include <glm\glm.hpp>
-#include <string>
+#include "Sprite.h"
 
 class Entity
 {
 public:
-	Entity();
+	Entity(SDL_Renderer& renderer,const std::string& filepath,glm::vec2 position,glm::vec2 size);
 	virtual ~Entity();
 
-	virtual bool Init(SDL_Renderer& renderer, const std::string& filePath,glm::vec2 position,glm::vec2 size);
 	virtual void Draw(SDL_Renderer& renderer);
 
-	//getters and setters
-	const glm::vec2& GetPosition()const { return m_position;  }
-	glm::vec2& GetPosition();
-	void SetPosition(float x,float y);
+	Sprite* GetSprite() { return m_sprite; }
 
-	SDL_Rect GetRect()const { return m_destRect; }
+	//getters and setters
+	const glm::vec2& GetPosition()const { return m_sprite->GetPosition(); }
+	glm::vec2& GetPosition() { return m_sprite->GetPosition(); }
+	void SetPosition(float x, float y) { return m_sprite->SetPosition(x, y); }
+
+	SDL_Rect GetRect()const { return m_sprite->GetRect(); }
 
 private:
-	SDL_Texture* m_texture;
-	glm::vec2 m_position;
-	glm::vec2 m_size;
-	SDL_Rect m_destRect;
+	Sprite* m_sprite;//every entity has a sprite
+	
 };
 
 #endif

@@ -5,8 +5,7 @@
 Game::Game():
 	m_framework(nullptr),
 	m_player(nullptr),
-	m_map(nullptr),
-	m_poo(nullptr)
+	m_map(nullptr)
 {
 
 }
@@ -25,9 +24,11 @@ Game::~Game()
 	delete m_map;
 	m_map = 0;
 
-	//delete the poo object
-	delete m_poo;
-	m_poo = 0;
+	//delete and clear all the poos
+	for (std::vector<Poo*>::iterator it = m_poos.begin(); it != m_poos.end(); ++it) {
+		delete *it;
+	}
+	m_poos.clear();
 }
 
 bool Game::Init(int screenWidth, int screenHeight, const char * windowTitle)
@@ -45,7 +46,9 @@ bool Game::Init(int screenWidth, int screenHeight, const char * windowTitle)
 	m_player = new Player(*m_framework->GetRenderer());
 
 	//create the poo
-	m_poo = new Poo(*m_framework->GetRenderer());
+	m_poos.push_back(new Poo(*m_framework->GetRenderer(), 400, 300));
+	m_poos.push_back(new Poo(*m_framework->GetRenderer(), 500, 200));
+	m_poos.push_back(new Poo(*m_framework->GetRenderer(), 100, 250));
 
 	return true;
 }
@@ -88,7 +91,6 @@ bool Game::Update()
 				m_done = true;
 				return false;
 			}
-
 			break;
 		case SDL_KEYUP:
 			m_inputManager.ReleaseKey(windowEvent.key.keysym.sym);
@@ -114,7 +116,12 @@ void Game::Draw()
 	//draw sprites
 	m_map->Draw(*m_framework->GetRenderer());
 	m_player->Draw(*m_framework->GetRenderer());
-	m_poo->Draw(*m_framework->GetRenderer());
+
+	//draw all the poos (if the poos are not eaten)
+	if(!pooEaten)
+		for (std::vector<Poo*>::iterator it = m_poos.begin(); it != m_poos.end(); ++it) {
+			(*it)->Draw(*m_framework->GetRenderer());
+		}
 
 	//when finished drawing present rendered objects
 	m_framework->EndDraw();
@@ -127,8 +134,13 @@ void Game::HandleInput()
 
 void Game::HandleCollision()
 {
-	//check if the player rect hits the poo rect
-	if ((m_player->GetRect().x == m_poo->GetRect().x) && (m_player->GetRect().y == m_poo->GetRect().y)) {
-		std::cout << "stan ate shit" << std::endl;
+
+	for (std::vector<Poo*>::iterator it = m_poos.begin(); it != m_poos.end(); ++it)
+	{
+		//check if the player rect hits the poo rect
+		if ((m_player->GetSprite()->GetRect().x == (*it)->GetRect().x) && (m_player->GetSprite()->GetRect().y == (*it)->GetRect().y)) {
+			std::cout << "stan ate shit" << std::endl;
+			pooEaten = true;
+		}
 	}
 }

@@ -8,7 +8,7 @@
 class Poo : public Entity
 {
 public:
-	Poo(SDL_Renderer& renderer);
+	Poo(SDL_Renderer& renderer,int x,int y);
 	~Poo();
 
 private:

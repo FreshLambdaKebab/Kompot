@@ -1,6 +1,8 @@
 #ifndef _Game_H
 #define _Game_H
 
+#include <vector>
+
 #include "Framework.h"
 
 #include "InputManager.h"
@@ -32,8 +34,9 @@ private:
 	Player* m_player;
 	Map* m_map;
 	InputManager m_inputManager;
-	Poo* m_poo;
+	std::vector<Poo*>m_poos;
 	
+	bool pooEaten = false;
 };
 
 #endif
